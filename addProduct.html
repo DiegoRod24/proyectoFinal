@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ropa : Agregar producto</title>
+
+    <link rel="stylesheet" href="css/signup.css">
+    <link rel="stylesheet" href="css/addProduct.css">
+
+</head>
+
+    <img src="img/loader.gif" alt="" class="loader">
+
+    <div class="alert-box">
+        <img src="img/error.png" alt="" class="alert-img">
+        <p class="alert-msg"></p>
+    </div>
+
+    <img src="img/dark-logo.png" alt="" class="logo">
+    
+    <div class="form">
+        <input type="text" id="product-name" maxlength="50" placeholder="nombre del producto">
+        <input type="text" id="short-des" maxlength="100" placeholder="descripción corta sobre el producto">
+        <textarea id="des" placeholder="detail description"></textarea>
+    
+    <!-- IMAGEN DEL PRODUCTO-->
+    <div class="product-info">
+        <div class="product-image"><p class="text">Imagen del Producto</p></div>
+        <div class="upload-image-sec">
+            <!--Cargar imagenes-->
+            <p class="text"><img src="img/camera1.gif" alt="">Cargar imagenes</p>
+            <div class="upload-catalouge">
+                <input type="file" class="fileupload" id="first-file-upload-btn" hidden>
+                <label for="first-file-upload-btn" class="upload-image"></label>
+                <input type="file" class="fileupload" id="second-file-upload-btn" hidden>
+                <label for="second-file-upload-btn" class="upload-image"></label>
+                <input type="file" class="fileupload" id="third-file-upload-btn" hidden>
+                <label for="third-file-upload-btn" class="upload-image"></label>
+                <input type="file" class="fileupload" id="fourth-file-upload-btn" hidden>
+                <label for="fourth-file-upload-btn" class="upload-image"></label>
+            </div>
+        </div>
+        <div class="select-sizes">
+            <p class="text">Tamaño disponible</p>
+            <div class="sizes">
+                <input type="checkbox" class="size-checkbox" id="xs" value="xs">
+                <input type="checkbox" class="size-checkbox" id="s" value="s">
+                <input type="checkbox" class="size-checkbox" id="m" value="m">
+                <input type="checkbox" class="size-checkbox" id="l" value="l">
+                <input type="checkbox" class="size-checkbox" id="xl" value="xl">
+                <input type="checkbox" class="size-checkbox" id="xxl" value="xxl">
+                <input type="checkbox" class="size-checkbox" id="xxxl" value="xxxl">
+               
+            </div>
+        </div>
+    </div>
+
+    <div class="product-price">
+        <input type="number" id="actual-price" placeholder="actual precio">
+        <input type="number" id="discount" placeholder="porcentaje de descuento">
+        <input type="number" id="sell-price" placeholder="precio de venta">
+    </div>
+
+</div>
+    <script src="js/token.js"></script>
+    <script src="js/addProduct.js"></script>
+
+</body>
+</html>

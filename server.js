@@ -34,7 +34,7 @@ app.get('/signup', (req, res) => {
     res.sendFile(path.join(staticPath,"signup.html"));
 })
 
-app.post('/signup', (req,res) => {
+app.post('/signup', (req, res) => {
     let { name, email, password, number, tac, notification } = req.body;
 
     //form validations
@@ -108,12 +108,40 @@ app.post('/login', (req,res) =>{
         }
     })
 })
-app.post
+//seller route
+app.get('/seller', (req, res) => {
+   res.sendFile(path.join(staticPath,"seller.html")); 
+})
+
+app.post('/seller',(req, res) => {
+    let{name, about, address, number, tac, legit, email} = req.body;
+    if(!name.length || !address.length || !about.length || number.length < 9
+        || !Number(number)){
+            return res.json({'alert':'alguna información no es válida'})
+        } else if(!tac || !legit){
+            return res.json({ 'alert': 'debes aceptar los términos y condiciones'})
+        } else {
+            // actualizar el estado de vendedor de los usuarios aquí
+            db.collection('sellers').doc(email).set(req.body).then(data=>{
+                db.collection('users').doc(email).update({
+                    seller:true
+                }).then(data => {
+                    res.json(true);
+                })
+            })
+        }
+})
+//add product
+app.get('/add-product',(req, res) => {
+    res.sendFile(path.join(staticPath,"addProduct.html"))
+})
+
 //404 route
 app.get('/404', (req, res) => {
     res.sendFile(path.join(staticPath,"404.html"));
 })
-//
+
+
 app.use((req,res) => {
     res.redirect('/404');
 })
