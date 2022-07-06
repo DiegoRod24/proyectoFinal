@@ -8,7 +8,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1167.0",
     "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.1",
     "express.js": "^1.0.0",
     "firebase-admin": "^11.0.0",
     "nodemon": "^2.0.18"

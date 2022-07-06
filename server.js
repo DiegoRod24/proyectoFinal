@@ -13,6 +13,46 @@ admin.initializeApp({
 
 let db = admin.firestore();
 
+//Aws configuracion
+const aws = require('aws-sdk');
+const dotenv = require('dotenv');
+const { generateKey } = require('crypto');
+const { AppIntegrations } = require('aws-sdk');
+
+dotenv.config();
+
+//aws parametros 
+const region="ap-south-1";
+const bucketName = "ecom-website-diego"
+const accessKeyId = process.env.AWS_ACCESS_KEY;
+const secretAccessKey = process.env.AWS_SECRET_KEY;
+
+aws.config.update({
+    region,
+    accessKeyId,
+    secretAccessKey
+})
+
+// inicializar s3
+const s3 = new aws.S3();
+
+//generate image upload link
+async function generateUrl(){
+    let date = new Date();
+    let id = parseInt(Math.random() * 10000000000)
+
+    const imageName = `${id}${date.getTime()}.jpg`;
+    
+    const params =({
+        Bucket: bucketName,
+        Key: imageName,
+        Expires: 300,
+        ContentType: 'image/jpeg'
+
+    })
+    const uploadUrl = await s3.getSignedUrlPromise('putObject', params);
+    return uploadUrl;
+}
 //declarando el path
 let staticPath= path.join(__dirname);
 
@@ -134,6 +174,18 @@ app.post('/seller',(req, res) => {
 //add product
 app.get('/add-product',(req, res) => {
     res.sendFile(path.join(staticPath,"addProduct.html"))
+})
+
+// obtener el enlace de carga
+app.get('/s3url', (req,res) => {
+    generateUrl().then(url => res.json(url));
+})
+
+//añadir producto
+app.get('/add-product',(req, res) =>{
+    let { name, shortDe, des, images, sizes, 
+        actualPrice, discount, sellPrice, 
+        stock,tags, tac, email }=req.sbody;
 })
 
 //404 route

@@ -15,7 +15,7 @@ body{
 }
 
 .loader{
-    position: absolute;
+    position: fixed;
     top: 25%;
     left: 42%;
     transform: translate(-50%, -10%);
@@ -131,7 +131,7 @@ label a{
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 5px 100px rgba(0, 0, 0, 0.05);
-    position: absolute;
+    position: fixed;
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -139,6 +139,7 @@ label a{
     opacity: 0;
     pointer-events: all;
     transition: 1s;
+    z-index: 2;
 }
 .alert-box.show{
     opacity: 1;
