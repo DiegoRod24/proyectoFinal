@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
 
+    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/search.css" />
     <link rel="stylesheet" href="css/signup.css" />
     <link rel="stylesheet" href="css/seller.css" />
+
   </head>
   <body>
     <img src="./img/loader.gif" class="loader" alt="" />
@@ -54,11 +57,42 @@
     <div class="product-listing hide">
         <div class="add-product">
             <p class="add-product-title">AGREGAR PRODUCTO</p>
-            <button class="btn">Añadir producto</button>
+            <button class="btn" onclick="location.href= '/addProduct.html'">Añadir producto</button>
         </div>
-        <img src="img/no-products.jpg" alt="" class="no-product-image">
+        <img src="img/no-products.jpg" alt="" class="no-product-image hide">
+
+       <!-- delete alert -->
+       <div class="delete-alert">
+        <div class="alert">
+          <button class="close-btn"><img src="img/close.png" alt=""></button>
+          <img src="img/delete-warning.jpg" alt="" class="delete-svg">
+          <p class="text">¿Está seguro ? Que quieres eliminar este producto</p>
+          <button class="delete-btn">Eliminar</button>
+        </div>
+       </div> 
+        
+       <!-- cards --> 
+       <div class="product-container">
+         <!-- <div class="product-card">
+            <div class="product-image">
+                <span class="tag">Reclutar</span>
+                <img src="./img/card5.png" alt="" class="product-thumb">
+                <button class="card-action-btn edit-btn"><img src="img/editar.png" alt=""></button>
+                <button class="card-action-btn open-btn"><img src="img/open.png" alt=""></button>
+                <button class="card-action-btn delete-popup-btn"><img src="img/delete.png" alt=""></button>
+
+            </div>
+            <div class="product-info">
+                <h2 class="product-brand">marca</h2>
+                <p class="product-short-des">una  linea corta sobre ...</p>
+                <span class="price">$20</span> <span class="actual-price">$40</span>
+
+            </div>
+        </div>--> 
+        </div>
     </div>
 
+    <script src="js/createProduct.js"></script>
     <script src="js/token.js"></script>
     <script src="js/seller.js"></script>
   </body>

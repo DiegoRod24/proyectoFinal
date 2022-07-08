@@ -107,7 +107,7 @@ app.post('/signup', (req, res) => {
                         res.json({
                             name: req.body.name,
                             email: req.body.email,
-                            seller: req.body.seller,
+                            seller: req.body.seller
 
                         })
                     })
@@ -175,6 +175,9 @@ app.post('/seller',(req, res) => {
 app.get('/add-product',(req, res) => {
     res.sendFile(path.join(staticPath,"addProduct.html"))
 })
+app.get('/add-product/:id',(req, res) => {
+    res.sendFile(path.join(staticPath,"addProduct.html"))
+})
 
 // obtener el enlace de carga
 app.get('/s3url', (req,res) => {
@@ -182,12 +185,79 @@ app.get('/s3url', (req,res) => {
 })
 
 //añadir producto
-app.get('/add-product',(req, res) =>{
-    let { name, shortDe, des, images, sizes, 
+app.post('/add-product',(req, res) =>{
+    let { name, shortDes, des, images, sizes, 
         actualPrice, discount, sellPrice, 
-        stock,tags, tac, email }=req.sbody;
-})
+        stock,tags, tac, email,draft } = req.body;
 
+        //validacion
+        if(!draft){
+            if(!name.length){
+                return res.json({'alert' : 'introducir nombre del producto'});
+            } else if(shortDes.length > 100 || shortDes.length<10){
+                return res.json( { 'alert' :'breve descripción debe tener entre 10 y 100 letras'} );
+            }else if(!des.length){
+                return res.json( { 'alert' : 'ingrese una descripción detallada sobre el producto' });
+            }else if(!images.length){// matriz de enlaces de imagen
+                return res.json({'alert' : 'sube al menos una imagen de producto'});
+            } else if (!sizes.length){// matriz de tamaño
+                return res.json('seleccione al menos un tamaño');
+            } else if (!actualPrice.length || !discount.length || !sellPrice.length){
+                return res.json( {'alert' : 'debes agregar precios'} );
+            } else if (stock< 20){
+                return res.json( {'alert' : 'debe tener al menos 20 artículos en stock'} );
+            } else if (!tags.length){
+                return res.json( {'alert' : 'ingrese algunas etiquetas para ayudar a clasificar su producto en la búsqueda '} );
+            } else if(!tac){
+                return res.json({'alert' : 'debes aceptar nuestros términos y condiciones'} );
+            }
+    
+        }
+        //adicionar producto
+        let docName =`${name.toLowerCase()}-${Math.floor(Math.random() * 5000)}`;
+        db.collection('products').doc(docName).set(req.body)
+        .then(data => {
+                res.json({'product': name });
+        })
+        .catch(err => {
+            return res.json( {'alert' : 'Se produjo algún error. intentar otra vez '});
+        })
+        })
+
+// Obtener Producto 
+app.post('/get-products', (req,res) => {
+    let{email,id}=req.body;
+    let docRef = id ? db.collection('products').doc(id) : db.collection('products').where('email', '==', email);
+
+    docRef.get()
+    .then(products =>{
+        if(products.empty){
+            return res.json('no products');
+        }
+        let productArr = [];
+        if(id){
+            return res.json(products.data());
+        }else{
+            products.forEach(item => {
+                let data =item.data();
+                data.id = item.id;
+                productArr.push(data);
+            })
+            res.json(productArr)
+        }
+      
+    })
+})    
+
+app.post('/delete-product', (req, res) =>{
+    let{id} = req.body;
+    db.collection('products').doc(id).delete()
+    .then(data => {
+        res.json('success');
+    }).catch(err => {
+        res.json('err');
+    })
+})
 //404 route
 app.get('/404', (req, res) => {
     res.sendFile(path.join(staticPath,"404.html"));

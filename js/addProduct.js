@@ -5,7 +5,7 @@ let loader = document.querySelector('.loader');
 window.onload = () => {
     if(user){
         if(!compareToken(user.authToken, user.email)){
-            location.replace('/login')
+            location.replace('/login');
         }
     } else{
         location.replace('/login');
@@ -97,7 +97,7 @@ const validateForm = () => {
     } else if(shortLine.value.length > 100 || shortLine.value.length<10){
         return showAlert('breve descripción debe tener entre 10 y 100 letras');
     }else if(!des.value.length){
-        return showAlert('ingrese una descripción detallada sobre el producto')
+        return showAlert('ingrese una descripción detallada sobre el producto');
     }else if(!imagePaths.length){// matriz de enlaces de imagen
         return showAlert('sube al menos una imagen de producto');
     } else if (!sizes.length){// matriz de tamaño
@@ -105,7 +105,7 @@ const validateForm = () => {
     } else if (!actualPrice.value.length || !discount.value.length || !sellingPrice.value.length){
         return showAlert('debes agregar precios');
     } else if (stock.value < 20){
-        return showAlert('debe tener al menos 20 artículos en stock')
+        return showAlert('debe tener al menos 20 artículos en stock');
     } else if (!tags.value.length){
         return showAlert('ingrese algunas etiquetas para ayudar a clasificar su producto en la búsqueda');
     } else if(!tac.checked){
@@ -137,6 +137,62 @@ addProductBtn.addEventListener('click', () => {
     if(validateForm()){ // validateForm devuelve verdadero o falso mientras se realiza la validación 
      loader.style.display = 'block';
      let data = productData();
-     sendData('/add-product', data)
+     sendData('/add-product', data);
     }
 })
+
+//guardar en borrador
+saveDraft.addEventListener('click', ()=> {
+    //store sizes
+    storeSizes();
+    //check for product name
+    if(!productName.value.length){
+    showAlert('Ingrese el nombre del producto');
+}else {
+    let data = productData();
+    data.draft=true;
+    sendData('/add-product', data);
+}
+})
+
+// identificador de detalles del producto existente
+
+const setFormsData = (data) => {
+    productName.value = data.name;
+    shortLine.value = data.shortDes;
+    des.value= data.des;
+    actualPrice.value = data.actualPrice;
+    discountPercentage.value = data.discountPercentage;
+    sellingPrice.value = data.sellPrice;
+    stock.value = data.stock;
+    tags.value = data.tags;
+
+}
+
+const fetchProductData = () =>{
+    //eliminar el producto temporal de la sesión
+    delete sessionStorage.tempProduct;
+    fetch('get-products', {
+        method: 'post',
+        headers: new Headers({'Content-Type': 'application/json'}),
+        body: JSON.stringify({email: user.email, id:productId})
+    })
+    .then((res) => res.json())
+    .then(data => {
+        setFormsData(data[0]);
+    })
+    .catch(err => {
+        location.replace('/seller');
+    })
+}
+
+let productId = null;
+if(location.pathname != '/addProduct'){
+    productId =decodeURI(location.pathname.split('/').pop());
+
+    let productDetail = JSON.parse(sessionStorage.tempProduct || null);
+    //obtener los datos si el producto no está en sesión
+   // if (productDetail == null){
+        fetchProductData();
+    //}
+}

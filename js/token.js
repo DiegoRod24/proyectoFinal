@@ -40,17 +40,19 @@ const processData = (data) => {
     loader.style.display = null;
     if(data.alert){
         showAlert(data.alert);
-    }else if (data.name){
+    } else if (data.name){
         //create authToken
         data.authToken = generateToken(data.email);
         sessionStorage.user = JSON.stringify(data);
-        location.replace('/')
+        location.replace('/');
     } else if (data == true){
         //página del vendedor
         let user = JSON.parse(sessionStorage.user);
         user.seller=true;
         sessionStorage.user =  JSON.stringify(user);
         location.reload();
+    } else if (data.product){
+        location.href = '/seller';
     }
 }
 
