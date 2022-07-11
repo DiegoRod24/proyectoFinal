@@ -122,7 +122,7 @@ const productData = () => {
         images: imagePaths,
         sizes: sizes,
         actualPrice: actualPrice.value,
-        discount: discountPercentage.value,
+        discount: discount.value,
         sellPrice: sellingPrice.value,
         stock: stock.value,
         tags: tags.value,
@@ -137,6 +137,9 @@ addProductBtn.addEventListener('click', () => {
     if(validateForm()){ // validateForm devuelve verdadero o falso mientras se realiza la validación 
      loader.style.display = 'block';
      let data = productData();
+     if(productId){
+        data.id = productId;
+     }
      sendData('/add-product', data);
     }
 })
@@ -148,9 +151,12 @@ saveDraft.addEventListener('click', ()=> {
     //check for product name
     if(!productName.value.length){
     showAlert('Ingrese el nombre del producto');
-}else {
+} else {
     let data = productData();
     data.draft=true;
+    if(productId){
+        data.id = productId;
+     }
     sendData('/add-product', data);
 }
 })
@@ -162,37 +168,59 @@ const setFormsData = (data) => {
     shortLine.value = data.shortDes;
     des.value= data.des;
     actualPrice.value = data.actualPrice;
-    discountPercentage.value = data.discountPercentage;
+    discount.value = data.discount;
     sellingPrice.value = data.sellPrice;
     stock.value = data.stock;
     tags.value = data.tags;
+    
+    //set up images
+    imagePaths = data.images;
+    imagePaths.forEach((url, i) => {
+        let label = document.querySelector(`label[for=${uploadImages[i].id}]`);
+        label.style.backgroundImage = `url(${url}) `;
+        let productImage = document.querySelector('.product-image');
+        productImage.style.backgroundImage = `url(${url})`;
+
+    })
+
+    //setup sizes
+    sizes = data.sizes;
+
+    let sizeCheckBox = document.querySelectorAll('.size-checkbox');
+    sizeCheckBox.forEach(item=>{
+        if(sizes.includes(item.value)){
+            item.setAttribute('checked', '')
+        }
+    })
 
 }
+
 
 const fetchProductData = () =>{
     //eliminar el producto temporal de la sesión
     delete sessionStorage.tempProduct;
-    fetch('get-products', {
+    fetch('/get-products', {
         method: 'post',
         headers: new Headers({'Content-Type': 'application/json'}),
-        body: JSON.stringify({email: user.email, id:productId})
+        body: JSON.stringify({email: user.email, id: productId})
     })
     .then((res) => res.json())
     .then(data => {
-        setFormsData(data[0]);
+        setFormsData(data);
     })
     .catch(err => {
-        location.replace('/seller');
+    console.log(err);
+/**/
     })
 }
 
+//existing product detail handle
 let productId = null;
 if(location.pathname != '/addProduct'){
     productId =decodeURI(location.pathname.split('/').pop());
 
     let productDetail = JSON.parse(sessionStorage.tempProduct || null);
-    //obtener los datos si el producto no está en sesión
-   // if (productDetail == null){
+
         fetchProductData();
-    //}
+ 
 }

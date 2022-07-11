@@ -61,7 +61,7 @@ applyFormButton.addEventListener('click', () =>{
 
 const setupProducts = () => {
     fetch('get-products', {
-      method : 'post',
+        method : 'post',
       headers: new Headers({"Content-Type" : "application/json"}),
       body: JSON.stringify({email: user.email})
     })

@@ -188,7 +188,7 @@ app.get('/s3url', (req,res) => {
 app.post('/add-product',(req, res) =>{
     let { name, shortDes, des, images, sizes, 
         actualPrice, discount, sellPrice, 
-        stock,tags, tac, email,draft } = req.body;
+        stock,tags, tac, email,draft, id } = req.body;
 
         //validacion
         if(!draft){
@@ -214,7 +214,8 @@ app.post('/add-product',(req, res) =>{
     
         }
         //adicionar producto
-        let docName =`${name.toLowerCase()}-${Math.floor(Math.random() * 5000)}`;
+        let docName = id == undefined ? `${name.toLowerCase()}-${Math.floor(Math.random
+        () * 5000)}` : id;
         db.collection('products').doc(docName).set(req.body)
         .then(data => {
                 res.json({'product': name });
@@ -226,8 +227,9 @@ app.post('/add-product',(req, res) =>{
 
 // Obtener Producto 
 app.post('/get-products', (req,res) => {
-    let{email,id}=req.body;
-    let docRef = id ? db.collection('products').doc(id) : db.collection('products').where('email', '==', email);
+    let{email, id}=req.body;
+    let docRef = id ? db.collection('products').doc(id) : db.collection('products').
+    where('email', '==', email);
 
     docRef.get()
     .then(products =>{
@@ -250,7 +252,7 @@ app.post('/get-products', (req,res) => {
 })    
 
 app.post('/delete-product', (req, res) =>{
-    let{id} = req.body;
+    let { id } = req.body;
     db.collection('products').doc(id).delete()
     .then(data => {
         res.json('success');
